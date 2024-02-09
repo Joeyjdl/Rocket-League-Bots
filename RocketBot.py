@@ -24,7 +24,7 @@ class SpeedReward(RewardFunction):
     rewards = np.empty(4)
 
     #reward for going fast
-    rewards[0] = math.vecmag(linear_velocity) / CAR_MAX_SPEED*2
+    rewards[0] = math.vecmag(linear_velocity) / (CAR_MAX_SPEED*2)
 
     #reward for getting close to the ball
     dist = np.linalg.norm(player.car_data.position - state.ball.position) - BALL_RADIUS
