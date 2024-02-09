@@ -21,26 +21,30 @@ class SpeedReward(RewardFunction):
   def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
     linear_velocity = player.car_data.linear_velocity
     
+    rewards = np.empty(4)
+
     #reward for going fast
-    reward = math.vecmag(linear_velocity)
+    rewards[0] = math.vecmag(linear_velocity) / CAR_MAX_SPEED*2
 
     #reward for getting close to the ball
     dist = np.linalg.norm(player.car_data.position - state.ball.position) - BALL_RADIUS
-    reward = reward + np.exp(-0.5 * dist / CAR_MAX_SPEED)
+    rewards[1] = np.exp(-0.5 * dist / CAR_MAX_SPEED)
 
     #reward for speed towards the ball
     vel = player.car_data.linear_velocity
     pos_diff = state.ball.position - player.car_data.position
     norm_pos_diff = pos_diff / np.linalg.norm(pos_diff)
     vel /= CAR_MAX_SPEED
-    reward = reward + float(np.dot(norm_pos_diff, vel))
+    rewards[2] = float(np.dot(norm_pos_diff, vel))
 
     #reward for facing the ball
     pos_diff = state.ball.position - player.car_data.position
     norm_pos_diff = pos_diff / np.linalg.norm(pos_diff)
-    reward = reward + float(np.dot(player.car_data.forward(), norm_pos_diff))
+    rewards[3] = float(np.dot(player.car_data.forward(), norm_pos_diff))
+
+    print(rewards)
     
-    return reward/4
+    return np.sum(rewards)
     
   def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
     return 0
@@ -61,7 +65,7 @@ class SaveModelCallback(BaseCallback):
 
 print(f"Code has begun")
 #Make the default rlgym environment
-env = rlgym.make(reward_fn=SpeedReward())
+env = rlgym.make(game_speed=2, reward_fn=SpeedReward())
 
 #Load model or initialize PPO from stable_baselines3
 print(f"Loading has begun")
