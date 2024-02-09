@@ -9,7 +9,9 @@ import os
 from rlgym.utils.reward_functions import RewardFunction
 from rlgym.utils import math
 from rlgym.utils.gamestates import GameState, PlayerData
+from rlgym.utils.common_values import BALL_RADIUS, CAR_MAX_SPEED
 import numpy as np
+
 
 
 class SpeedReward(RewardFunction):
@@ -18,9 +20,27 @@ class SpeedReward(RewardFunction):
 
   def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
     linear_velocity = player.car_data.linear_velocity
-    reward = math.vecmag(linear_velocity)
     
-    return reward
+    #reward for going fast
+    reward = math.vecmag(linear_velocity)
+
+    #reward for getting close to the ball
+    dist = np.linalg.norm(player.car_data.position - state.ball.position) - BALL_RADIUS
+    reward = reward + np.exp(-0.5 * dist / CAR_MAX_SPEED)
+
+    #reward for speed towards the ball
+    vel = player.car_data.linear_velocity
+    pos_diff = state.ball.position - player.car_data.position
+    norm_pos_diff = pos_diff / np.linalg.norm(pos_diff)
+    vel /= CAR_MAX_SPEED
+    reward = reward + float(np.dot(norm_pos_diff, vel))
+
+    #reward for facing the ball
+    pos_diff = state.ball.position - player.car_data.position
+    norm_pos_diff = pos_diff / np.linalg.norm(pos_diff)
+    reward = reward + float(np.dot(player.car_data.forward(), norm_pos_diff))
+    
+    return reward/4
     
   def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
     return 0
