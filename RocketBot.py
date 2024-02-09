@@ -2,12 +2,29 @@ import rlgym
 from stable_baselines3 import PPO
 
 from stable_baselines3.common.callbacks import BaseCallback
-# from stable_baselines3.common.callbacks import CheckpointCallback
-
-# from stable_baselines3.common.save_util import save_to_zip_file
-# from stable_baselines3.common.save_util import load_from_zip_file
 
 import os
+
+
+from rlgym.utils.reward_functions import RewardFunction
+from rlgym.utils import math
+from rlgym.utils.gamestates import GameState, PlayerData
+import numpy as np
+
+
+class SpeedReward(RewardFunction):
+  def reset(self, initial_state: GameState):
+    pass
+
+  def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
+    linear_velocity = player.car_data.linear_velocity
+    reward = math.vecmag(linear_velocity)
+    
+    return reward
+    
+  def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
+    return 0
+  
 
 class SaveModelCallback(BaseCallback):
     def __init__(self, save_freq: int, save_path: str, model):
@@ -24,26 +41,20 @@ class SaveModelCallback(BaseCallback):
 
 print(f"Code has begun")
 #Make the default rlgym environment
-env = rlgym.make()
+env = rlgym.make(reward_fn=SpeedReward())
 
-#Initialize PPO from stable_baselines3
+#Load model or initialize PPO from stable_baselines3
 print(f"Loading has begun")
 if os.path.exists('./BotBrains/RockBotBrain.zip'):
     model = PPO.load('./BotBrains/RockBotBrain', env=env, verbose=1)
 else:
     model = PPO("MlpPolicy", env=env, verbose=1)
-# model = None
-# if os.path.exists("RockBotBrain.zip"):
-#     model = load_from_zip_file("RockBotBrain")
-# if not isinstance(model, PPO):
-#     model = PPO("MlpPolicy", env=env, verbose=1)
 
 #Train our agent!
 # Set up the callback to save the model every `save_freq` steps
 save_freq = 100  # Adjust as needed
 save_path = "./BotBrains/RockBotBrain"
 save_callback = SaveModelCallback(save_freq, save_path, model)
-# checkpoint_callback = CheckpointCallback(save_freq=save_freq, save_path=save_path)
 
 # Train the model with the callback
 print(f"Training has begun")
