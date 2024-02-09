@@ -41,8 +41,6 @@ class SpeedReward(RewardFunction):
     pos_diff = state.ball.position - player.car_data.position
     norm_pos_diff = pos_diff / np.linalg.norm(pos_diff)
     rewards[3] = float(np.dot(player.car_data.forward(), norm_pos_diff))
-
-    print(rewards)
     
     return np.sum(rewards)
     
@@ -65,7 +63,7 @@ class SaveModelCallback(BaseCallback):
 
 print(f"Code has begun")
 #Make the default rlgym environment
-env = rlgym.make(game_speed=2, reward_fn=SpeedReward())
+env = rlgym.make(game_speed=100, reward_fn=SpeedReward())
 
 #Load model or initialize PPO from stable_baselines3
 print(f"Loading has begun")
