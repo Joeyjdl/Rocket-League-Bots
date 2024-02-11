@@ -9,7 +9,7 @@ import os
 from rlgym.utils.reward_functions import RewardFunction
 from rlgym.utils import math
 from rlgym.utils.gamestates import GameState, PlayerData
-from rlgym.utils.common_values import BALL_RADIUS, CAR_MAX_SPEED
+from rlgym.utils.common_values import BALL_RADIUS, CAR_MAX_SPEED, BLUE_TEAM, ORANGE_TEAM, ORANGE_GOAL_BACK, BLUE_GOAL_BACK, BALL_MAX_SPEED, BACK_WALL_Y, BACK_NET_Y
 import numpy as np
 
 
@@ -21,7 +21,7 @@ class SpeedReward(RewardFunction):
   def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
     linear_velocity = player.car_data.linear_velocity
     
-    rewards = np.empty(4)
+    rewards = np.empty(5)
 
     #reward for going fast
     rewards[0] = math.vecmag(linear_velocity) / (CAR_MAX_SPEED*2)
@@ -41,6 +41,16 @@ class SpeedReward(RewardFunction):
     pos_diff = state.ball.position - player.car_data.position
     norm_pos_diff = pos_diff / np.linalg.norm(pos_diff)
     rewards[3] = float(np.dot(player.car_data.forward(), norm_pos_diff))
+
+    #reward for getting ball to goal
+    if player.team_num == BLUE_TEAM:
+        objective = np.array(ORANGE_GOAL_BACK)
+    else:
+        objective = np.array(BLUE_GOAL_BACK)
+
+    # Compensate for moving objective to back of net
+    dist = np.linalg.norm(state.ball.position - objective) - (BACK_NET_Y - BACK_WALL_Y + BALL_RADIUS)
+    rewards[4] = 2 * np.exp(-0.5 * dist / BALL_MAX_SPEED)
     
     return np.sum(rewards)
     
