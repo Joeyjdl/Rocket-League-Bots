@@ -73,7 +73,7 @@ class SaveModelCallback(BaseCallback):
 
 print(f"Code has begun")
 #Make the default rlgym environment
-env = rlgym.make(game_speed=100, reward_fn=SpeedReward())
+env = rlgym.make(game_speed=100, reward_fn=SpeedReward(), auto_minimize=True)
 
 #Load model or initialize PPO from stable_baselines3
 print(f"Loading has begun")
@@ -84,7 +84,7 @@ else:
 
 #Train our agent!
 # Set up the callback to save the model every `save_freq` steps
-save_freq = 100  # Adjust as needed
+save_freq = 5000  # Adjust as needed
 save_path = "./BotBrains/RockBotBrain"
 save_callback = SaveModelCallback(save_freq, save_path, model)
 
