@@ -1,4 +1,4 @@
-import rlgym
+import rlgym_sim as rlgym
 from stable_baselines3 import PPO
 
 from stable_baselines3.common.callbacks import BaseCallback
@@ -135,8 +135,7 @@ class BalancedReward(RewardFunction):
 
 print(f"Code has begun")
 #Make the default rlgym environment
-env = rlgym.make(game_speed=200, reward_fn=BalancedReward
-                 (), auto_minimize=False, use_injector=True)
+env = rlgym.make(reward_fn=BalancedReward(), copy_gamestate_every_step=True)
 # env = Monitor(env, "./logs")
 # env = DummyVecEnv([lambda: env])
 # # Use VecNormalize for normalization
