@@ -17,6 +17,7 @@ from rlgym.utils.gamestates import GameState, PlayerData
 from rlgym.utils.common_values import BALL_RADIUS, CAR_MAX_SPEED, BLUE_TEAM, ORANGE_TEAM, ORANGE_GOAL_BACK, BLUE_GOAL_BACK, BALL_MAX_SPEED, BACK_WALL_Y, BACK_NET_Y
 import numpy as np
 
+from rlgym_ppo import Learner
 
 
 class SpeedReward(RewardFunction):
@@ -136,10 +137,10 @@ class BalancedReward(RewardFunction):
 print(f"Code has begun")
 #Make the default rlgym environment
 env = rlgym.make(reward_fn=BalancedReward(), copy_gamestate_every_step=True)
-# env = Monitor(env, "./logs")
-# env = DummyVecEnv([lambda: env])
-# # Use VecNormalize for normalization
-# env = VecNormalize(env)
+
+def init_rlgym():
+  import rlgym_sim
+  return rlgym_sim.make(reward_fn=BalancedReward())
 
 
 class CustomCallback(BaseCallback):
