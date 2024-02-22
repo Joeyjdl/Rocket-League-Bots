@@ -1,6 +1,31 @@
 import numpy as np
 from rlgym_sim.utils.gamestates import GameState
 from rlgym_ppo.util import MetricsLogger
+import sys
+import os
+
+CHECKPOINT_PATH = "data/checkpoints/"
+
+def find_newest_checkpoint(path):
+    abs_path = os.path.abspath(path)
+
+    max_number = -1
+    max_folder_name = None
+
+    if not os.path.isdir(abs_path):
+        print("Invalid directory path.")
+        return None
+
+    # Iterate over directories in the given path
+    for folder_name in os.listdir(abs_path):
+        print(folder_name)
+        if folder_name.isdigit():
+            number = int(folder_name)
+            if number > max_number:
+                max_number = number
+                max_folder_name = folder_name
+
+    return max_folder_name
 
 
 class ExampleLogger(MetricsLogger):
@@ -90,5 +115,20 @@ if __name__ == "__main__":
                       standardize_obs=False,
                       save_every_ts=100_000,
                       timestep_limit=5_000_000,
-                      log_to_wandb=False)
+                      log_to_wandb=False,
+                      checkpoints_save_folder= CHECKPOINT_PATH + "botgobrrr" if (len(sys.argv) < 2) else (CHECKPOINT_PATH + sys.argv[1]),
+                      add_unix_timestamp= (len(sys.argv) < 2)
+                      )
+    
+    if len(sys.argv) == 2:
+        # load from folder and use newest checkpoint
+        learner.load(CHECKPOINT_PATH + sys.argv[1] + "/" + find_newest_checkpoint(CHECKPOINT_PATH + sys.argv[1]), False)
+    elif len(sys.argv) == 3:
+        # load from folder and use specific checkpoint
+        learner.load(CHECKPOINT_PATH + sys.argv[1]  + "/" + sys.argv[2], False)
+    
+
+
+
     learner.learn()
+
