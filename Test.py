@@ -5,6 +5,7 @@ import sys
 import os
 
 CHECKPOINT_PATH = "data/checkpoints/"
+LOG_TO_WANDB = True
 
 def find_newest_checkpoint(path):
     abs_path = os.path.abspath(path)
@@ -26,6 +27,10 @@ def find_newest_checkpoint(path):
                 max_folder_name = folder_name
 
     return max_folder_name
+
+def bot_exists(name):
+    folder = os.path.abspath("./data/checkpoints/" + name)
+    return os.path.exists(folder)
 
 
 class ExampleLogger(MetricsLogger):
@@ -95,6 +100,10 @@ if __name__ == "__main__":
     from rlgym_ppo import Learner
     metrics_logger = ExampleLogger()
 
+    if len(sys.argv) < 2:
+        print("Please enter a name for the model you would like to create/load")
+        exit(-1)
+
     # 32 processes
     n_proc = 32
 
@@ -115,17 +124,19 @@ if __name__ == "__main__":
                       standardize_obs=False,
                       save_every_ts=100_000,
                       timestep_limit=5_000_000,
-                      log_to_wandb=False,
-                      checkpoints_save_folder= CHECKPOINT_PATH + "botgobrrr" if (len(sys.argv) < 2) else (CHECKPOINT_PATH + sys.argv[1]),
+                      log_to_wandb=LOG_TO_WANDB,
+                      checkpoints_save_folder= CHECKPOINT_PATH + "new_unnamed_bot" if (len(sys.argv) < 2) else (CHECKPOINT_PATH + sys.argv[1]),
                       add_unix_timestamp= (len(sys.argv) < 2)
                       )
     
     if len(sys.argv) == 2:
         # load from folder and use newest checkpoint
-        learner.load(CHECKPOINT_PATH + sys.argv[1] + "/" + find_newest_checkpoint(CHECKPOINT_PATH + sys.argv[1]), False)
+        if(bot_exists(sys.argv[1])):
+            learner.load(CHECKPOINT_PATH + sys.argv[1] + "/" + find_newest_checkpoint(CHECKPOINT_PATH + sys.argv[1]), LOG_TO_WANDB)
     elif len(sys.argv) == 3:
         # load from folder and use specific checkpoint
-        learner.load(CHECKPOINT_PATH + sys.argv[1]  + "/" + sys.argv[2], False)
+        if(bot_exists(sys.argv[1])):
+            learner.load(CHECKPOINT_PATH + sys.argv[1]  + "/" + sys.argv[2], LOG_TO_WANDB)
     
 
 
