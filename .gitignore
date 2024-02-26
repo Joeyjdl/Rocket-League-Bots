@@ -1,5 +1,5 @@
 # Build stuff
-logs
-data
-wandb
-RockBot
+/logs
+/data
+/wandb
+/RockBot
