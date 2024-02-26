@@ -1,0 +1,55 @@
+{
+    "os": "Windows-10-10.0.22631-SP0",
+    "python": "3.9.13",
+    "heartbeatAt": "2024-02-23T16:09:40.059415",
+    "startedAt": "2024-02-23T16:09:39.468076",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "new_idiot"
+    ],
+    "state": "running",
+    "program": "C:\\Users\\nhcla\\Documents\\Uni\\Machine Learning\\Rocket-League-Bots\\Test.py",
+    "codePathLocal": "Test.py",
+    "codePath": "Test.py",
+    "git": {
+        "remote": "https://github.com/Joeyjdl/Rocket-League-Bots.git",
+        "commit": "66600c70496df7ef72f47a1a9dd421bd4e88ca4e"
+    },
+    "email": "nhclaessens@gmail.com",
+    "root": "C:/Users/nhcla/Documents/Uni/Machine Learning/Rocket-League-Bots",
+    "host": "Space-heater",
+    "username": "nhcla",
+    "executable": "C:\\Users\\nhcla\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
+    "cpu_count": 12,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 4701.0,
+        "min": 0.0,
+        "max": 4701.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 4701.0,
+            "min": 0.0,
+            "max": 4701.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 983.2382774353027,
+            "used": 146.76815032958984
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 4080 SUPER",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 4080 SUPER",
+            "memory_total": 17171480576
+        }
+    ],
+    "memory": {
+        "total": 63.21756362915039
+    }
+}

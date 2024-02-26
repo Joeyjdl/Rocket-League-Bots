@@ -1,0 +1,92 @@
+wandb_version: 1
+
+n_proc:
+  desc: null
+  value: 1
+min_inference_size:
+  desc: null
+  value: 1
+timestep_limit:
+  desc: null
+  value: 5000000
+exp_buffer_size:
+  desc: null
+  value: 150000
+ts_per_iteration:
+  desc: null
+  value: 50000
+standardize_returns:
+  desc: null
+  value: true
+standardize_obs:
+  desc: null
+  value: false
+policy_layer_sizes:
+  desc: null
+  value:
+  - 256
+  - 256
+  - 256
+critic_layer_sizes:
+  desc: null
+  value:
+  - 256
+  - 256
+  - 256
+ppo_epochs:
+  desc: null
+  value: 1
+ppo_batch_size:
+  desc: null
+  value: 50000
+ppo_minibatch_size:
+  desc: null
+  value: 50000
+ppo_ent_coef:
+  desc: null
+  value: 0.001
+ppo_clip_range:
+  desc: null
+  value: 0.2
+gae_lambda:
+  desc: null
+  value: 0.95
+gae_gamma:
+  desc: null
+  value: 0.99
+policy_lr:
+  desc: null
+  value: 0.0003
+critic_lr:
+  desc: null
+  value: 0.0003
+shm_buffer_size:
+  desc: null
+  value: 8192
+_wandb:
+  desc: null
+  value:
+    python_version: 3.9.13
+    cli_version: 0.16.3
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1708706921.889938
+    t:
+      1:
+      - 1
+      - 55
+      2:
+      - 1
+      - 55
+      3:
+      - 2
+      - 13
+      - 16
+      - 23
+      4: 3.9.13
+      5: 0.16.3
+      8:
+      - 3
+      - 5
+      13: windows-amd64
