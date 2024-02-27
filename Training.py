@@ -6,6 +6,8 @@ import os
 
 CHECKPOINT_PATH = "data/checkpoints/"
 LOG_TO_WANDB = True
+WANDB_NAME="Overnight04"
+WANDB_NOTES="Opponents added."
 
 def find_newest_checkpoint(path):
     abs_path = os.path.abspath(path)
@@ -59,8 +61,8 @@ def build_rocketsim_env():
     from rlgym_sim.utils.terminal_conditions.common_conditions import NoTouchTimeoutCondition, GoalScoredCondition
     from rlgym_sim.utils import common_values
     from rlgym_sim.utils.action_parsers import ContinuousAction
-
-    spawn_opponents = True
+    
+    spawn_opponents = False
     team_size = 1
     game_tick_rate = 120
     tick_skip = 8
@@ -72,7 +74,7 @@ def build_rocketsim_env():
 
     rewards_to_combine = (VelocityPlayerToBallReward(),
                           VelocityBallToGoalReward(),
-                          EventReward(team_goal=1, concede=-1, demo=0.1))
+                          EventReward(team_goal=1, concede=-1, demo=0.1, touch=0.2, shot=0.4))
     reward_weights = (0.01, 0.1, 10.0)
 
     reward_fn = CombinedReward(reward_functions=rewards_to_combine,
@@ -120,8 +122,9 @@ if __name__ == "__main__":
                       ppo_epochs=1,
                       standardize_returns=True,
                       standardize_obs=False,
+                    #   render=True,
                       save_every_ts=100_000,
-                      timestep_limit=5_000_000,
+                      timestep_limit=1_000_000_000,
                       log_to_wandb=LOG_TO_WANDB,
                       checkpoints_save_folder= CHECKPOINT_PATH + "new_unnamed_bot" if (len(sys.argv) < 2) else (CHECKPOINT_PATH + sys.argv[1]),
                       add_unix_timestamp= (len(sys.argv) < 2)

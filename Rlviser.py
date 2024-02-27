@@ -7,81 +7,82 @@ import time
 
 import rlgym_sim
 
-TPS = 15
+# TPS = 15
 
-env = rlgym_sim.make(spawn_opponents=True)
+# env = rlgym_sim.make(spawn_opponents=True)
 
-while True:
-    obs = env.reset()
+# while True:
+#     obs = env.reset()
 
-    done = False
-    steps = 0
-    ep_reward = 0
-    t0 = time.time()
-    starttime = time.time()
-    while not done:
-        actions_1 = env.action_space.sample()
-        actions_2 = env.action_space.sample()
-        actions = [actions_1, actions_2]
-        new_obs, reward, done, state = env.step(actions)
-        env.render()
-        ep_reward += reward[0]
-        steps += 1
+#     done = False
+#     steps = 0
+#     ep_reward = 0
+#     t0 = time.time()
+#     starttime = time.time()
+#     while not done:
+#         actions_1 = env.action_space.sample()
+#         actions_2 = env.action_space.sample()
+#         actions = [actions_1, actions_2]
+#         new_obs, reward, done, state = env.step(actions)
+#         env.render()
+#         ep_reward += reward[0]
+#         steps += 1
 
-        # Sleep to keep the game in real time
-        time.sleep(max(0, starttime + steps / TPS - time.time()))
+#         # Sleep to keep the game in real time
+#         time.sleep(max(0, starttime + steps / TPS - time.time()))
 
-    length = time.time() - t0
-    print("Step time: {:1.5f} | Episode time: {:.2f} | Episode Reward: {:.2f}".format(length / steps, length, ep_reward))
+#     length = time.time() - t0
+#     print("Step time: {:1.5f} | Episode time: {:.2f} | Episode Reward: {:.2f}".format(length / steps, length, ep_reward))
 
-    
+
 
 # ## Load model
-# if __name__ == "__main__":
-#     from rlgym_ppo import Learner
-#     metrics_logger = functions.ExampleLogger()
+if __name__ == "__main__":
+    from rlgym_ppo import Learner
+    metrics_logger = functions.ExampleLogger()
 
-#     if len(functions.sys.argv) < 2:
-#         print("Please enter a name for the model you would like to create/load")
-#         exit(-1)
+    if len(functions.sys.argv) < 2:
+        print("Please enter a name for the model you would like to create/load")
+        exit(-1)
 
-#     # 32 processes
-#     n_proc = 1
+    # 32 processes
+    n_proc = 1
 
-#     # educated guess - could be slightly higher or lower
-#     min_inference_size = max(1, int(round(n_proc * 0.9)))
+    # educated guess - could be slightly higher or lower
+    min_inference_size = max(1, int(round(n_proc * 0.9)))
 
-#     learner = Learner(functions.build_rocketsim_env,
-#                       n_proc=n_proc,
-#                       min_inference_size=min_inference_size,
-#                       metrics_logger=metrics_logger,
-#                       ppo_batch_size=50000,
-#                       ts_per_iteration=50000,
-#                       exp_buffer_size=150000,
-#                       ppo_minibatch_size=50000,
-#                       ppo_ent_coef=0.001,
-#                       ppo_epochs=1,
-#                       standardize_returns=True,
-#                       standardize_obs=False,
-#                       render=True,
-#                       save_every_ts=100_000,
-#                       timestep_limit=50_000_000_000,
-#                       log_to_wandb=functions.LOG_TO_WANDB,
-#                       checkpoints_save_folder= functions.CHECKPOINT_PATH + "new_unnamed_bot" if (len(functions.sys.argv) < 2) else (functions.CHECKPOINT_PATH + functions.sys.argv[1]),
-#                       add_unix_timestamp= (len(functions.sys.argv) < 2)
-#                       )
+    learner = Learner(functions.build_rocketsim_env,
+                      n_proc=n_proc,
+                      min_inference_size=min_inference_size,
+                      metrics_logger=metrics_logger,
+                      ppo_batch_size=50000,
+                      ts_per_iteration=50000,
+                      exp_buffer_size=150000,
+                      ppo_minibatch_size=50000,
+                      ppo_ent_coef=0.001,
+                      ppo_epochs=1,
+                      standardize_returns=True,
+                      standardize_obs=False,
+                    #   render=True,
+                      save_every_ts=100_000,
+                      timestep_limit=50_000_000_000,
+                      log_to_wandb=functions.LOG_TO_WANDB,
+                      checkpoints_save_folder= functions.CHECKPOINT_PATH + "new_unnamed_bot" if (len(functions.sys.argv) < 2) else (functions.CHECKPOINT_PATH + functions.sys.argv[1]),
+                      add_unix_timestamp= (len(functions.sys.argv) < 2)
+                      )
     
-#     if len(functions.sys.argv) == 2:
-#         # load from folder and use newest checkpoint
-#         if(functions.bot_exists(functions.sys.argv[1])):
-#             learner.load(functions.CHECKPOINT_PATH + functions.sys.argv[1] + "/" + functions.find_newest_checkpoint(functions.CHECKPOINT_PATH + functions.sys.argv[1]), functions.LOG_TO_WANDB)
-#     elif len(functions.sys.argv) == 3:
-#         # load from folder and use specific checkpoint
-#         if(functions.bot_exists(functions.sys.argv[1])):
-#             learner.load(functions.CHECKPOINT_PATH + functions.sys.argv[1]  + "/" + functions.sys.argv[2], functions.LOG_TO_WANDB)
+    if len(functions.sys.argv) == 2:
+        # load from folder and use newest checkpoint
+        if(functions.bot_exists(functions.sys.argv[1])):
+            learner.load(functions.CHECKPOINT_PATH + functions.sys.argv[1] + "/" + functions.find_newest_checkpoint(functions.CHECKPOINT_PATH + functions.sys.argv[1]), functions.LOG_TO_WANDB)
+    elif len(functions.sys.argv) == 3:
+        # load from folder and use specific checkpoint
+        if(functions.bot_exists(functions.sys.argv[1])):
+            learner.load(functions.CHECKPOINT_PATH + functions.sys.argv[1]  + "/" + functions.sys.argv[2], functions.LOG_TO_WANDB)
 
 
-#     learner.learn()
+    # learner.learn()
+
 
 
 
@@ -124,3 +125,30 @@ while True:
 # # Tell RLViser to exit
 # print("Exiting...")
 # vis.quit()
+
+    import rlgym_sim  
+    from rlgym_sim.utils.action_parsers import ContinuousAction
+    import time
+    import numpy as np
+
+
+    # numActions = 300
+    # action_parser = ContinuousAction(numActions)
+
+
+
+    env = rlgym_sim.make(spawn_opponents=False)
+
+    episodes = 100
+
+    for ep in range(episodes):
+        obs = env.reset()
+        done = False
+        while not done:
+            # inference_batch = np.concatenate(obs, axis=0)
+            actions, log_probs = learner.ppo_learner.policy.get_action(obs=obs)
+            actions = actions.numpy().astype(np.float32)
+            # print(f"The actions are \n\n{actions}")
+            env.render()
+            obs, reward, done, info = env.step(actions)
+            time.sleep(1/30)
