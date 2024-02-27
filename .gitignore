@@ -3,6 +3,7 @@
 /data
 /wandb
 /RockBot
-logsassets.path
+logs
+assets.path
 /assets
 /wandb
