@@ -3,6 +3,7 @@ from rlgym_sim.utils.gamestates import GameState
 from rlgym_ppo.util import MetricsLogger
 import sys
 import os
+from datetime import datetime
 
 CHECKPOINT_PATH = "data/checkpoints/"
 LOG_TO_WANDB = True
@@ -123,6 +124,8 @@ if __name__ == "__main__":
                       save_every_ts=100_000,
                       timestep_limit=5_000_000,
                       log_to_wandb=LOG_TO_WANDB,
+                      wandb_group_name="unnamed group" if (len(sys.argv) < 2) else (sys.argv[1]),
+                      wandb_run_name=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                       checkpoints_save_folder= CHECKPOINT_PATH + "new_unnamed_bot" if (len(sys.argv) < 2) else (CHECKPOINT_PATH + sys.argv[1]),
                       add_unix_timestamp= (len(sys.argv) < 2)
                       )
