@@ -1,0 +1,12 @@
+vsync=false
+uncap_fps=false
+fps_limit=120
+ball_cam=true
+stop_day=true
+daytime=25
+day_speed=1
+msaa=0
+camera_state={"TrackCar":1}
+show_time=true
+ui_scale=1.4
+shadows=0
