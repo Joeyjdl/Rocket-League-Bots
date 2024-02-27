@@ -118,6 +118,7 @@ if __name__ == "__main__":
                       ppo_minibatch_size=50000,
                       ppo_ent_coef=0.001,
                       ppo_epochs=1,
+                      render=True,
                       standardize_returns=True,
                       standardize_obs=False,
                       save_every_ts=100_000,
@@ -141,3 +142,16 @@ if __name__ == "__main__":
 
     learner.learn()
 
+    env = build_rocketsim_env()
+
+    # print("done learning")
+    # episodes = 10
+
+    # for ep in range(episodes):
+    #     env.reset()
+    #     done = False
+    #     while not done:
+
+    #         print(learner.predict())
+    #         env.render()
+    #         env.step(env.action_space.sample())
