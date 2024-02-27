@@ -1,3 +1,8 @@
-assets.path
+# Build stuff
+/logs
+/data
+/wandb
+/RockBot
+logsassets.path
 /assets
 /wandb
