@@ -5,36 +5,17 @@ import RocketSim as rs
 import Training as functions
 import time
 
-import rlgym_sim
-
-# TPS = 15
-
-# env = rlgym_sim.make(spawn_opponents=True)
-
-# while True:
-#     obs = env.reset()
-
-#     done = False
-#     steps = 0
-#     ep_reward = 0
-#     t0 = time.time()
-#     starttime = time.time()
-#     while not done:
-#         actions_1 = env.action_space.sample()
-#         actions_2 = env.action_space.sample()
-#         actions = [actions_1, actions_2]
-#         new_obs, reward, done, state = env.step(actions)
-#         env.render()
-#         ep_reward += reward[0]
-#         steps += 1
-
-#         # Sleep to keep the game in real time
-#         time.sleep(max(0, starttime + steps / TPS - time.time()))
-
-#     length = time.time() - t0
-#     print("Step time: {:1.5f} | Episode time: {:.2f} | Episode Reward: {:.2f}".format(length / steps, length, ep_reward))
-
-
+import rlgym_sim  
+from rlgym_sim.utils.action_parsers import ContinuousAction
+import time
+import numpy as np
+from rlgym_sim.utils.reward_functions import CombinedReward
+from rlgym_sim.utils.reward_functions.common_rewards import VelocityPlayerToBallReward, VelocityBallToGoalReward, \
+    EventReward
+from rlgym_sim.utils.obs_builders import DefaultObs
+from rlgym_sim.utils.terminal_conditions.common_conditions import NoTouchTimeoutCondition, GoalScoredCondition
+from rlgym_sim.utils import common_values
+from rlgym_sim.utils.action_parsers import ContinuousAction
 
 # ## Load model
 if __name__ == "__main__":
@@ -63,7 +44,6 @@ if __name__ == "__main__":
                       ppo_epochs=1,
                       standardize_returns=True,
                       standardize_obs=False,
-                    #   render=True,
                       save_every_ts=100_000,
                       timestep_limit=50_000_000_000,
                       log_to_wandb=functions.LOG_TO_WANDB,
@@ -80,64 +60,37 @@ if __name__ == "__main__":
         if(functions.bot_exists(functions.sys.argv[1])):
             learner.load(functions.CHECKPOINT_PATH + functions.sys.argv[1]  + "/" + functions.sys.argv[2], functions.LOG_TO_WANDB)
 
+    spawn_opponents = True
+    team_size = 1
+    game_tick_rate = 120
+    tick_skip = 8
+    timeout_seconds = 10
+    timeout_ticks = int(round(timeout_seconds * game_tick_rate / tick_skip))
 
-    # learner.learn()
+    action_parser = ContinuousAction()
+    terminal_conditions = [NoTouchTimeoutCondition(timeout_ticks), GoalScoredCondition()]
 
+    rewards_to_combine = (VelocityPlayerToBallReward(),
+                          VelocityBallToGoalReward(),
+                          EventReward(team_goal=1, concede=-1, demo=0.1, touch=0.2, shot=0.4, save=0.5))
+    reward_weights = (0.01, 0.1, 10.0)
 
+    reward_fn = CombinedReward(reward_functions=rewards_to_combine,
+                               reward_weights=reward_weights)
 
+    obs_builder = DefaultObs(
+        pos_coef=np.asarray([1 / common_values.SIDE_WALL_X, 1 / common_values.BACK_NET_Y, 1 / common_values.CEILING_Z]),
+        ang_coef=1 / np.pi,
+        lin_vel_coef=1 / common_values.CAR_MAX_SPEED,
+        ang_vel_coef=1 / common_values.CAR_MAX_ANG_VEL)
 
-# game_mode = rs.GameMode.SOCCAR
-
-# # Create example arena
-# arena = rs.Arena(game_mode)
-
-# # Set boost pad locations
-# vis.set_boost_pad_locations([pad.get_pos().as_tuple() for pad in arena.get_boost_pads()])
-
-# # Setup example arena
-# car = arena.add_car(rs.Team.BLUE)
-# car.set_state(rs.CarState(pos=rs.Vec(z=17), vel=rs.Vec(x=50), boost=100))
-# arena.ball.set_state(rs.BallState(pos=rs.Vec(y=400, z=100), ang_vel=rs.Vec(x=5)))
-# car.set_controls(rs.CarControls(throttle=1, steer=1, boost=True))
-
-# # Run for 3 seconds
-# TIME = 3
-
-# steps = 0
-# start_time = time.time()
-# for i in range(round(TIME * arena.tick_rate)):
-#     arena.step(1)
-
-#     # Render the current game state
-#     pad_states = [pad.get_state().is_active for pad in arena.get_boost_pads()]
-#     ball = arena.ball.get_state()
-#     car_data = [
-#         (car.id, car.team, car.get_config(), car.get_state())
-#         for car in arena.get_cars()
-#     ]
-
-#     vis.render(steps, arena.tick_rate, game_mode, pad_states, ball, car_data)
-
-#     # sleep to simulate running real time (it will run a LOT after otherwise)
-#     time.sleep(max(0, start_time + steps / arena.tick_rate - time.time()))
-#     steps += 1
-
-# # Tell RLViser to exit
-# print("Exiting...")
-# vis.quit()
-
-    import rlgym_sim  
-    from rlgym_sim.utils.action_parsers import ContinuousAction
-    import time
-    import numpy as np
-
-
-    # numActions = 300
-    # action_parser = ContinuousAction(numActions)
-
-
-
-    env = rlgym_sim.make(spawn_opponents=False)
+    env = rlgym_sim.make(tick_skip=tick_skip,
+                            team_size=team_size,
+                            spawn_opponents=spawn_opponents,
+                            terminal_conditions=terminal_conditions,
+                            reward_fn=reward_fn,
+                            obs_builder=obs_builder,
+                            action_parser=action_parser)
 
     episodes = 100
 

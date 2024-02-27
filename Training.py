@@ -22,7 +22,6 @@ def find_newest_checkpoint(path):
 
     # Iterate over directories in the given path
     for folder_name in os.listdir(abs_path):
-        print(folder_name)
         if folder_name.isdigit():
             number = int(folder_name)
             if number > max_number:
@@ -63,7 +62,7 @@ def build_rocketsim_env():
     from rlgym_sim.utils import common_values
     from rlgym_sim.utils.action_parsers import ContinuousAction
     
-    spawn_opponents = False
+    spawn_opponents = True
     team_size = 1
     game_tick_rate = 120
     tick_skip = 8
@@ -75,7 +74,7 @@ def build_rocketsim_env():
 
     rewards_to_combine = (VelocityPlayerToBallReward(),
                           VelocityBallToGoalReward(),
-                          EventReward(team_goal=1, concede=-1, demo=0.1, touch=0.2, shot=0.4))
+                          EventReward(team_goal=1, concede=-1, demo=0.1, touch=0.2, shot=0.4, save=0.5))
     reward_weights = (0.01, 0.1, 10.0)
 
     reward_fn = CombinedReward(reward_functions=rewards_to_combine,
