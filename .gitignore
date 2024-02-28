@@ -3,4 +3,7 @@
 /data
 /wandb
 /RockBot
+/assets
 logs
+assets.path
+notify.log
