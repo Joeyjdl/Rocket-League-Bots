@@ -1,7 +1,0 @@
-Created new wandb run! ipwoi3ah
-Learner successfully initialized!
-100000
-200000
-Loading from checkpoint at data/checkpoints/fff/200000
-LOADED RUNNING STATS FROM JSON | Mean: [-0.00255091] | Variance: [1.95193684] | Count: 600
-LOADED RUNNING STATS FROM JSON | Mean: [-0.00255091] | Variance: [1.95193684] | Count: 600

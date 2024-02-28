@@ -1,6 +1,6 @@
 # import Training as functions
-from logger.ExampleLogger import ExampleLogger
-from envBuilder.build_rocketsim_env import build_rocketsim_env
+from utils.logger.ExampleLogger import ExampleLogger
+from utils.envBuilder.build_rocketsim_env import build_rocketsim_env
 
 import time
 import sys

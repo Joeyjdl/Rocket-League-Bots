@@ -1,7 +1,0 @@
-Created new wandb run! sarbjriw
-Learner successfully initialized!
-Invalid directory path.
-Traceback (most recent call last):
-  File "C:\Users\nhcla\Documents\Uni\Machine Learning\Rocket-League-Bots\Test.py", line 130, in <module>
-    learner.load(CHECKPOINT_PATH + sys.argv[1] + "/" + find_newest_checkpoint(CHECKPOINT_PATH + sys.argv[1]), LOG_TO_WANDB)
-TypeError: can only concatenate str (not "NoneType") to str

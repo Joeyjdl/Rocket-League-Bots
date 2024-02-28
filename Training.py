@@ -1,10 +1,10 @@
 import numpy as np
-from logger.ExampleLogger import ExampleLogger
+from utils.logger.ExampleLogger import ExampleLogger
 
 import sys
 import os
 from datetime import datetime
-from envBuilder.build_rocketsim_env import build_rocketsim_env
+from utils.envBuilder.build_rocketsim_env import build_rocketsim_env
 
 CHECKPOINT_PATH = "data/checkpoints/"
 LOG_TO_WANDB = True
