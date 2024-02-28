@@ -1,28 +1,55 @@
-import time
+# import Training as functions
+from logger.ExampleLogger import ExampleLogger
+from envBuilder.build_rocketsim_env import build_rocketsim_env
 
-import rlviser_py as vis
-import RocketSim as rs
-import Training as functions
 import time
-
+import sys
+import os
 import rlgym_sim  
-from rlgym_sim.utils.action_parsers import ContinuousAction
-import time
 import numpy as np
 from rlgym_sim.utils.reward_functions import CombinedReward
 from rlgym_sim.utils.reward_functions.common_rewards import VelocityPlayerToBallReward, VelocityBallToGoalReward, \
     EventReward
 from rlgym_sim.utils.obs_builders import DefaultObs
 from rlgym_sim.utils.terminal_conditions.common_conditions import NoTouchTimeoutCondition, GoalScoredCondition
-from rlgym_sim.utils import common_values
 from rlgym_sim.utils.action_parsers import ContinuousAction
+from rlgym_sim.utils import common_values
+
+
+CHECKPOINT_PATH = "data/checkpoints/"
+LOG_TO_WANDB = True
+
+def bot_exists(name):
+    folder = os.path.abspath("./data/checkpoints/" + name)
+    return os.path.exists(folder)
+
+def find_newest_checkpoint(path):
+    abs_path = os.path.abspath(path)
+
+    max_number = -1
+    max_folder_name = None
+
+    if not os.path.isdir(abs_path):
+        print("Invalid directory path.")
+        return None
+
+    # Iterate over directories in the given path
+    for folder_name in os.listdir(abs_path):
+        if folder_name.isdigit():
+            number = int(folder_name)
+            if number > max_number:
+                max_number = number
+                max_folder_name = folder_name
+
+    return max_folder_name
+
 
 # ## Load model
 if __name__ == "__main__":
     from rlgym_ppo import Learner
-    metrics_logger = functions.ExampleLogger()
+    metrics_logger = ExampleLogger()
 
-    if len(functions.sys.argv) < 2:
+    if len(sys.argv) < 2:
         print("Please enter a name for the model you would like to create/load")
         exit(-1)
 
@@ -32,7 +59,7 @@ if __name__ == "__main__":
     # educated guess - could be slightly higher or lower
     min_inference_size = max(1, int(round(n_proc * 0.9)))
 
-    learner = Learner(functions.build_rocketsim_env,
+    learner = Learner(build_rocketsim_env,
                       n_proc=n_proc,
                       min_inference_size=min_inference_size,
                       metrics_logger=metrics_logger,
@@ -46,19 +73,19 @@ if __name__ == "__main__":
                       standardize_obs=False,
                       save_every_ts=100_000,
                       timestep_limit=50_000_000_000,
-                      log_to_wandb=functions.LOG_TO_WANDB,
-                      checkpoints_save_folder= functions.CHECKPOINT_PATH + "new_unnamed_bot" if (len(functions.sys.argv) < 2) else (functions.CHECKPOINT_PATH + functions.sys.argv[1]),
-                      add_unix_timestamp= (len(functions.sys.argv) < 2)
+                      log_to_wandb=LOG_TO_WANDB,
+                      checkpoints_save_folder= CHECKPOINT_PATH + "new_unnamed_bot" if (len(sys.argv) < 2) else (CHECKPOINT_PATH + sys.argv[1]),
+                      add_unix_timestamp= (len(sys.argv) < 2)
                       )
     
-    if len(functions.sys.argv) == 2:
+    if len(sys.argv) == 2:
         # load from folder and use newest checkpoint
-        if(functions.bot_exists(functions.sys.argv[1])):
-            learner.load(functions.CHECKPOINT_PATH + functions.sys.argv[1] + "/" + functions.find_newest_checkpoint(functions.CHECKPOINT_PATH + functions.sys.argv[1]), functions.LOG_TO_WANDB)
-    elif len(functions.sys.argv) == 3:
+        if(bot_exists(sys.argv[1])):
+            learner.load(CHECKPOINT_PATH + sys.argv[1] + "/" + find_newest_checkpoint(CHECKPOINT_PATH + sys.argv[1]), LOG_TO_WANDB)
+    elif len(sys.argv) == 3:
         # load from folder and use specific checkpoint
-        if(functions.bot_exists(functions.sys.argv[1])):
-            learner.load(functions.CHECKPOINT_PATH + functions.sys.argv[1]  + "/" + functions.sys.argv[2], functions.LOG_TO_WANDB)
+        if(bot_exists(sys.argv[1])):
+            learner.load(CHECKPOINT_PATH + sys.argv[1]  + "/" + sys.argv[2], LOG_TO_WANDB)
 
     spawn_opponents = True
     team_size = 1
