@@ -54,9 +54,7 @@ class ExampleLogger(MetricsLogger):
 
 def build_rocketsim_env():
     import rlgym_sim
-    from rlgym_sim.utils.reward_functions import CombinedReward
-    from rlgym_sim.utils.reward_functions.common_rewards import VelocityPlayerToBallReward, VelocityBallToGoalReward, \
-        EventReward
+    from Rewards.firstReward import firstReward
     from rlgym_sim.utils.obs_builders import DefaultObs
     from rlgym_sim.utils.terminal_conditions.common_conditions import NoTouchTimeoutCondition, GoalScoredCondition
     from rlgym_sim.utils import common_values
@@ -72,13 +70,7 @@ def build_rocketsim_env():
     action_parser = ContinuousAction()
     terminal_conditions = [NoTouchTimeoutCondition(timeout_ticks), GoalScoredCondition()]
 
-    rewards_to_combine = (VelocityPlayerToBallReward(),
-                          VelocityBallToGoalReward(),
-                          EventReward(team_goal=1, concede=-1, demo=0.1, touch=0.2, shot=0.4, save=0.5))
-    reward_weights = (0.01, 0.1, 10.0)
-
-    reward_fn = CombinedReward(reward_functions=rewards_to_combine,
-                               reward_weights=reward_weights)
+    reward_fn = firstReward()
 
     obs_builder = DefaultObs(
         pos_coef=np.asarray([1 / common_values.SIDE_WALL_X, 1 / common_values.BACK_NET_Y, 1 / common_values.CEILING_Z]),
