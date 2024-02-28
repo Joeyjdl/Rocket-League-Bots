@@ -4,5 +4,7 @@
 /wandb
 /RockBot
 /assets
-assets.path
 logs
+assets.path
+notify.log
+_pycache_
