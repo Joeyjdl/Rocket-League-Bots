@@ -17,7 +17,7 @@ from rlgym_sim.utils import common_values
 
 
 CHECKPOINT_PATH = "data/checkpoints/"
-LOG_TO_WANDB = True
+LOG_TO_WANDB = False
 
 def bot_exists(name):
     folder = os.path.abspath("./data/checkpoints/" + name)
