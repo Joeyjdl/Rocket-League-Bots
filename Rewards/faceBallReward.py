@@ -1,11 +1,12 @@
 from rlgym_sim.utils.reward_functions import CombinedReward
 from rlgym_sim.utils.reward_functions.common_rewards import VelocityPlayerToBallReward, VelocityBallToGoalReward, EventReward
 from rlgym_sim.utils.gamestates import GameState, PlayerData
+from rlgym_sim.utils import RewardFunction
 import numpy as np
 
-def faceBall():
+class faceBall(RewardFunction):
     def reset(self, initial_state: GameState):
-            pass
+        pass
 
     def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
         pos_diff = state.ball.position - player.car_data.position
