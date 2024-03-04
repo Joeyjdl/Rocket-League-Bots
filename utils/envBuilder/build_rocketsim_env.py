@@ -1,6 +1,7 @@
 from utils.Rewards.firstReward import firstReward
 from utils.Rewards.faceBallReward import faceBallReward
 from utils.Rewards.lessFaceBallReward import lessFaceBallReward
+from utils.Rewards.lessFaceBallReward import otherLessFaceBallReward
 import rlgym_sim
 from rlgym_sim.utils.obs_builders import DefaultObs
 from rlgym_sim.utils.terminal_conditions.common_conditions import NoTouchTimeoutCondition, GoalScoredCondition
@@ -21,7 +22,7 @@ def build_rocketsim_env():
     action_parser = ContinuousAction()
     terminal_conditions = [NoTouchTimeoutCondition(timeout_ticks), GoalScoredCondition()]
 
-    reward_fn = lessFaceBallReward()
+    reward_fn = otherLessFaceBallReward()
 
     obs_builder = DefaultObs(
         pos_coef=np.asarray([1 / common_values.SIDE_WALL_X, 1 / common_values.BACK_NET_Y, 1 / common_values.CEILING_Z]),

@@ -13,7 +13,7 @@ class faceBall(RewardFunction):
         euclid_pos_dif = np.linalg.norm(pos_diff)
         norm_pos_diff = pos_diff / euclid_pos_dif
         reward = float(np.dot(player.car_data.forward(), norm_pos_diff))
-        if euclid_pos_dif < 1000:
+        if euclid_pos_dif < 10:
             return reward
         else:
             return 0
@@ -28,4 +28,13 @@ def lessFaceBallReward():
     return CombinedReward(reward_functions=rewards_to_combine,
                             reward_weights=reward_weights)
 
+def otherLessFaceBallReward():
+    rewards_to_combine = (VelocityPlayerToBallReward(),
+                        VelocityBallToGoalReward(),
+                        faceBall(),
+                        EventReward(goal=10, concede=-8, demo=0.1, touch=0.2, shot=0.4, save=0.5))
+    reward_weights = (0.01, 0.1, 0.01, 10.0)
+
+    return CombinedReward(reward_functions=rewards_to_combine,
+                            reward_weights=reward_weights)
 
