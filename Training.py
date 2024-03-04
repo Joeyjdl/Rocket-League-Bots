@@ -1,4 +1,5 @@
 import numpy as np
+from utils.logger.DiscordLogger import DiscordLogger
 from utils.logger.ExampleLogger import ExampleLogger
 
 import sys
@@ -38,7 +39,7 @@ def bot_exists(name):
 
 if __name__ == "__main__":
     from rlgym_ppo import Learner
-    metrics_logger = ExampleLogger()
+    metrics_logger = DiscordLogger()
 
     if len(sys.argv) < 2:
         print("Please enter a name for the model you would like to create/load")
