@@ -1,3 +1,4 @@
+from utils.Rewards.firstReward import firstReward
 from utils.Rewards.sparseReward import sparseReward
 import rlgym_sim
 from rlgym_sim.utils.obs_builders import DefaultObs
@@ -19,7 +20,7 @@ def build_rocketsim_env():
     action_parser = ContinuousAction()
     terminal_conditions = [NoTouchTimeoutCondition(timeout_ticks), GoalScoredCondition()]
 
-    reward_fn = sparseReward()
+    reward_fn = firstReward()
 
     obs_builder = DefaultObs(
         pos_coef=np.asarray([1 / common_values.SIDE_WALL_X, 1 / common_values.BACK_NET_Y, 1 / common_values.CEILING_Z]),
