@@ -46,6 +46,10 @@ if __name__ == "__main__":
 
     # 32 processes
     n_proc = 32
+    if("--n_proc" in sys.argv):
+        i = sys.argv.index("--n_proc")
+        n_proc = int(sys.argv[i+1])
+        print("n_proc=" + str(n_proc))
 
     # educated guess - could be slightly higher or lower
     min_inference_size = max(1, int(round(n_proc * 0.9)))
