@@ -46,7 +46,7 @@ if __name__ == "__main__":
         exit(-1)
 
     # 32 processes
-    n_proc = 64
+    n_proc = 32
 
     # educated guess - could be slightly higher or lower
     min_inference_size = max(1, int(round(n_proc * 0.9)))
