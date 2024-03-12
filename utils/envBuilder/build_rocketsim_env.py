@@ -1,5 +1,6 @@
 from utils.Rewards.firstReward import firstReward
 from utils.Rewards.sparseReward import sparseReward
+from utils.stateSetter.stateSetter import CustomRandomState
 import rlgym_sim
 from rlgym_sim.utils.obs_builders import DefaultObs
 from rlgym_sim.utils.terminal_conditions.common_conditions import NoTouchTimeoutCondition, GoalScoredCondition
@@ -29,7 +30,7 @@ def build_rocketsim_env():
         lin_vel_coef=1 / common_values.CAR_MAX_SPEED,
         ang_vel_coef=1 / common_values.CAR_MAX_ANG_VEL)
     
-    state_setter = RandomState()
+    state_setter = CustomRandomState(ball_on_ground=True)
 
     env = rlgym_sim.make(tick_skip=tick_skip,
                          team_size=team_size,

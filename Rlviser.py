@@ -1,6 +1,7 @@
 # import Training as functions
 from utils.logger.ExampleLogger import ExampleLogger
 from utils.envBuilder.build_rocketsim_env import build_rocketsim_env
+from utils.stateSetter.stateSetter import CustomRandomState
 
 import time
 import sys
@@ -88,7 +89,7 @@ if __name__ == "__main__":
         if(bot_exists(sys.argv[1])):
             learner.load(CHECKPOINT_PATH + sys.argv[1]  + "/" + sys.argv[2], LOG_TO_WANDB)
 
-    spawn_opponents = True
+    spawn_opponents = False
     team_size = 1
     game_tick_rate = 120
     tick_skip = 8
@@ -112,7 +113,7 @@ if __name__ == "__main__":
         lin_vel_coef=1 / common_values.CAR_MAX_SPEED,
         ang_vel_coef=1 / common_values.CAR_MAX_ANG_VEL)
 
-    state_setter = RandomState()
+    state_setter = CustomRandomState(ball_on_ground=True)
 
     env = rlgym_sim.make(tick_skip=tick_skip,
                             team_size=team_size,
