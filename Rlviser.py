@@ -88,7 +88,7 @@ if __name__ == "__main__":
         if(bot_exists(sys.argv[1])):
             learner.load(CHECKPOINT_PATH + sys.argv[1]  + "/" + sys.argv[2], LOG_TO_WANDB)
 
-    spawn_opponents = True
+    spawn_opponents = False
     team_size = 1
     game_tick_rate = 120
     tick_skip = 8
