@@ -1,6 +1,6 @@
-vsync=false
+vsync=true
 uncap_fps=false
-fps_limit=120
+fps_limit=30
 ball_cam=true
 stop_day=true
 daytime=25

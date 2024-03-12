@@ -4,7 +4,9 @@
 /wandb
 /RockBot
 /assets
+/rlbot
 logs
 assets.path
 notify.log
 _pycache_
+*.pyc

@@ -14,6 +14,7 @@ from rlgym_sim.utils.obs_builders import DefaultObs
 from rlgym_sim.utils.terminal_conditions.common_conditions import NoTouchTimeoutCondition, GoalScoredCondition
 from rlgym_sim.utils.action_parsers import ContinuousAction
 from rlgym_sim.utils import common_values
+from rlgym_sim.utils.state_setters import RandomState
 
 
 CHECKPOINT_PATH = "data/checkpoints/"
@@ -111,13 +112,16 @@ if __name__ == "__main__":
         lin_vel_coef=1 / common_values.CAR_MAX_SPEED,
         ang_vel_coef=1 / common_values.CAR_MAX_ANG_VEL)
 
+    state_setter = RandomState()
+
     env = rlgym_sim.make(tick_skip=tick_skip,
                             team_size=team_size,
                             spawn_opponents=spawn_opponents,
                             terminal_conditions=terminal_conditions,
                             reward_fn=reward_fn,
                             obs_builder=obs_builder,
-                            action_parser=action_parser)
+                            action_parser=action_parser,
+                            state_setter=state_setter)
 
     episodes = 100
 

@@ -47,6 +47,10 @@ if __name__ == "__main__":
 
     # 32 processes
     n_proc = 32
+    if("--n_proc" in sys.argv):
+        i = sys.argv.index("--n_proc")
+        n_proc = int(sys.argv[i+1])
+        print("n_proc=" + str(n_proc))
 
     # educated guess - could be slightly higher or lower
     min_inference_size = max(1, int(round(n_proc * 0.9)))
@@ -70,7 +74,8 @@ if __name__ == "__main__":
                       wandb_run_name=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                       wandb_project_name="rlgym-ppo",
                       checkpoints_save_folder= CHECKPOINT_PATH + "new_unnamed_bot" if (len(sys.argv) < 2) else (CHECKPOINT_PATH + sys.argv[1]),
-                      add_unix_timestamp= (len(sys.argv) < 2)
+                      add_unix_timestamp= (len(sys.argv) < 2),
+                      random_seed = 123
                       )
     
     if len(sys.argv) == 2:
