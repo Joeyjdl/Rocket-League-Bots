@@ -7,7 +7,9 @@ from action.default_act import DefaultAction
 from agent import Agent
 from obs.default_obs import DefaultObs
 from rlgym_compat import GameState
-
+# from rlgym_tools.extra_obs.advanced_padder import AdvancedObsPadder 
+# from obsBuilder import ObsBuilder
+from rlgym_sim.utils import common_values
 
 class RLGymExampleBot(BaseAgent):
     def __init__(self, name, team, index):
@@ -15,7 +17,13 @@ class RLGymExampleBot(BaseAgent):
 
         # FIXME Hey, botmaker. Start here:
         # Swap the obs builder if you are using a different one, RLGym's AdvancedObs is also available
-        self.obs_builder = DefaultObs()
+        # self.obs_builder = AdvancedObsPadder(team_size=1)
+        self.obs_builder = DefaultObs(
+            pos_coef=np.asarray([1 / common_values.SIDE_WALL_X, 1 / common_values.BACK_NET_Y, 1 / common_values.CEILING_Z]),
+            ang_coef=1 / np.pi,
+            lin_vel_coef=1 / common_values.CAR_MAX_SPEED,
+            ang_vel_coef=1 / common_values.CAR_MAX_ANG_VEL)
+
         # Swap the action parser if you are using a different one, RLGym's Discrete and Continuous are also available
         self.act_parser = DefaultAction()
         # Your neural network logic goes inside the Agent class, go take a look inside src/agent.py

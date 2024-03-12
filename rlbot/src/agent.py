@@ -15,12 +15,12 @@ class Agent:
             89,
             16,
             policy_layer_sizes,
-            device="cpu",
-        ).to("cpu")
+            device="cuda",
+        ).to(torch.device("cuda"))
 
         print("Bot loading...")
         missing_keys = self.actor.load_state_dict(
-            torch.load(os.path.join("C:/Users/Joey/AppData/Local/RLBotGUIX/MyBots/Example/src/Brain/", "PPO_POLICY.pt"))
+            torch.load(os.path.join("C:/Users/nhcla/Documents/Uni/Machine Learning/Rocket-League-Bots/rlbot/src/Brain", "PPO_POLICY.pt"))
         )
         print(f"missing keys {missing_keys}")
         # self.policy.get_action(obs)

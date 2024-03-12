@@ -6,14 +6,13 @@ from rlgym_sim.utils.obs_builders import DefaultObs
 from rlgym_sim.utils.terminal_conditions.common_conditions import NoTouchTimeoutCondition, GoalScoredCondition
 from rlgym_sim.utils import common_values
 from rlgym_sim.utils.action_parsers import ContinuousAction
-import numpy as np
-
 from rlgym_sim.utils.state_setters import RandomState
+import numpy as np
 
 def build_rocketsim_env():
 
     
-    spawn_opponents = True
+    spawn_opponents = False
     team_size = 1
     game_tick_rate = 120
     tick_skip = 8
@@ -30,6 +29,8 @@ def build_rocketsim_env():
         ang_coef=1 / np.pi,
         lin_vel_coef=1 / common_values.CAR_MAX_SPEED,
         ang_vel_coef=1 / common_values.CAR_MAX_ANG_VEL)
+    
+    state_setter = RandomState()
 
     env = rlgym_sim.make(tick_skip=tick_skip,
                          team_size=team_size,
@@ -38,6 +39,6 @@ def build_rocketsim_env():
                          reward_fn=reward_fn,
                          obs_builder=obs_builder,
                          action_parser=action_parser,
-                         state_setter=RandomState(True,True,True))
+                         state_setter=state_setter)
 
     return env
