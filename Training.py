@@ -73,7 +73,8 @@ if __name__ == "__main__":
                       wandb_run_name=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                       wandb_project_name="rlgym-ppo",
                       checkpoints_save_folder= CHECKPOINT_PATH + "new_unnamed_bot" if (len(sys.argv) < 2) else (CHECKPOINT_PATH + sys.argv[1]),
-                      add_unix_timestamp= (len(sys.argv) < 2)
+                      add_unix_timestamp= (len(sys.argv) < 2),
+                      random_seed = 123
                       )
     
     if len(sys.argv) == 2:
