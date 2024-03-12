@@ -8,6 +8,8 @@ from rlgym_sim.utils import common_values
 from rlgym_sim.utils.action_parsers import ContinuousAction
 import numpy as np
 
+from rlgym_sim.utils.state_setters import RandomState
+
 def build_rocketsim_env():
 
     
@@ -35,6 +37,7 @@ def build_rocketsim_env():
                          terminal_conditions=terminal_conditions,
                          reward_fn=reward_fn,
                          obs_builder=obs_builder,
-                         action_parser=action_parser)
+                         action_parser=action_parser,
+                         state_setter=RandomState(True,True,True))
 
     return env
