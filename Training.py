@@ -68,7 +68,7 @@ if __name__ == "__main__":
                       standardize_returns=True,
                       standardize_obs=False,
                       save_every_ts=100_000,
-                      timestep_limit=1_010_000_000,
+                      timestep_limit=2_000_000_000,
                       log_to_wandb=LOG_TO_WANDB,
                       wandb_group_name="unnamed group" if (len(sys.argv) < 2) else (sys.argv[1]),
                       wandb_run_name=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),

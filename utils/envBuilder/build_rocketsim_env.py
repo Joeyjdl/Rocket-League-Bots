@@ -22,7 +22,7 @@ def build_rocketsim_env():
     action_parser = ContinuousAction()
     terminal_conditions = [NoTouchTimeoutCondition(timeout_ticks), GoalScoredCondition()]
 
-    reward_fn = firstReward()
+    reward_fn = sparseReward()
 
     obs_builder = DefaultObs(
         pos_coef=np.asarray([1 / common_values.SIDE_WALL_X, 1 / common_values.BACK_NET_Y, 1 / common_values.CEILING_Z]),
