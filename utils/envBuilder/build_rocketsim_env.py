@@ -10,6 +10,7 @@ from rlgym_sim.utils.action_parsers import ContinuousAction
 from rlgym_sim.utils.state_setters import RandomState
 import numpy as np
 
+# DO NOT CALL THE FUNCTION HERE!!! ##########################################################
 reward_fn = defaultReward
 
 def build_rocketsim_env():    
