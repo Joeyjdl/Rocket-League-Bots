@@ -9,9 +9,9 @@ from rlgym_sim.utils.action_parsers import ContinuousAction
 from rlgym_sim.utils.state_setters import RandomState
 import numpy as np
 
-def build_rocketsim_env():
+reward_fn = sparseReward
 
-    
+def build_rocketsim_env():    
     spawn_opponents = False
     team_size = 1
     game_tick_rate = 120
@@ -22,7 +22,6 @@ def build_rocketsim_env():
     action_parser = ContinuousAction()
     terminal_conditions = [NoTouchTimeoutCondition(timeout_ticks), GoalScoredCondition()]
 
-    reward_fn = sparseReward()
 
     obs_builder = DefaultObs(
         pos_coef=np.asarray([1 / common_values.SIDE_WALL_X, 1 / common_values.BACK_NET_Y, 1 / common_values.CEILING_Z]),
@@ -36,7 +35,7 @@ def build_rocketsim_env():
                          team_size=team_size,
                          spawn_opponents=spawn_opponents,
                          terminal_conditions=terminal_conditions,
-                         reward_fn=reward_fn,
+                         reward_fn=reward_fn(),
                          obs_builder=obs_builder,
                          action_parser=action_parser,
                          state_setter=state_setter)
