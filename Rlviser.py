@@ -1,6 +1,6 @@
 # import Training as functions
 from utils.logger.ExampleLogger import ExampleLogger
-from utils.envBuilder.build_rocketsim_env import build_rocketsim_env
+from utils.envBuilder.build_rocketsim_env import build_rocketsim_env, reward_fn
 from utils.stateSetter.stateSetter import CustomState
 
 import time
@@ -52,8 +52,26 @@ if __name__ == "__main__":
     metrics_logger = ExampleLogger()
 
     if len(sys.argv) < 2:
-        print("Please enter a name for the model you would like to create/load")
+        print("Please enter a valid run number (check wanDB please)")
         exit(-1)
+    
+    if not reward_fn.__name__:
+        print("You messed up something related to the reward function")
+        exit(-1)
+
+    run_name = ""
+
+    if sys.argv[1].isnumeric():
+        # use current reward func, interpret as run number
+        run_name = reward_fn.__name__ + "_" + sys.argv[1]
+    else:
+        # use full name
+        run_name = sys.argv[1]
+
+    print("##################################")
+    print("Starting Rviser for: " + run_name)
+    print("##################################\n")
+    
 
     # 32 processes
     n_proc = 1
@@ -82,12 +100,16 @@ if __name__ == "__main__":
     
     if len(sys.argv) == 2:
         # load from folder and use newest checkpoint
-        if(bot_exists(sys.argv[1])):
-            learner.load(CHECKPOINT_PATH + sys.argv[1] + "/" + find_newest_checkpoint(CHECKPOINT_PATH + sys.argv[1]), LOG_TO_WANDB)
+        if(bot_exists(run_name)):
+            print("Loading bot " + run_name + " from newest checkpoint")
+            learner.load(CHECKPOINT_PATH + run_name + "/" + find_newest_checkpoint(CHECKPOINT_PATH + run_name), LOG_TO_WANDB)
+        else:
+            print("The provided model, " + run_name + ", does not exist, creating new instead")
     elif len(sys.argv) == 3:
         # load from folder and use specific checkpoint
-        if(bot_exists(sys.argv[1])):
-            learner.load(CHECKPOINT_PATH + sys.argv[1]  + "/" + sys.argv[2], LOG_TO_WANDB)
+        print("Loading bot " + run_name + " from checkpoint " + str(sys.argv[2]))
+        if(bot_exists(run_name)):
+            learner.load(CHECKPOINT_PATH + run_name  + "/" + sys.argv[2], LOG_TO_WANDB)
 
     spawn_opponents = False
     team_size = 1
