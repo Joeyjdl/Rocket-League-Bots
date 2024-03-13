@@ -1,5 +1,7 @@
 from utils.Rewards.firstReward import firstReward
 from utils.Rewards.sparseReward import sparseReward
+from utils.Rewards.defaultReward import defaultReward
+
 from utils.stateSetter.stateSetter import CustomState
 import rlgym_sim
 from rlgym_sim.utils.obs_builders import DefaultObs
@@ -9,6 +11,7 @@ from rlgym_sim.utils.action_parsers import ContinuousAction
 from rlgym_sim.utils.state_setters import RandomState
 import numpy as np
 
+# DO NOT CALL THE FUNCTION HERE!!! ##########################################################
 reward_fn = sparseReward
 
 def build_rocketsim_env():    
