@@ -1,7 +1,6 @@
 from utils.Rewards.firstReward import firstReward
 from utils.Rewards.sparseReward import sparseReward
 from utils.Rewards.defaultReward import defaultReward
-
 from utils.stateSetter.stateSetter import CustomState
 import rlgym_sim
 from rlgym_sim.utils.obs_builders import DefaultObs
