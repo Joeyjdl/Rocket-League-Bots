@@ -5,7 +5,7 @@ from utils.logger.ExampleLogger import ExampleLogger
 import sys
 import os
 from datetime import datetime
-from utils.envBuilder.build_rocketsim_env import build_rocketsim_env
+from utils.envBuilder.build_rocketsim_env import build_rocketsim_env, reward_fn
 
 CHECKPOINT_PATH = "data/checkpoints/"
 LOG_TO_WANDB = True
@@ -41,9 +41,19 @@ if __name__ == "__main__":
     from rlgym_ppo import Learner
     metrics_logger = DiscordLogger()
 
-    if len(sys.argv) < 2:
-        print("Please enter a name for the model you would like to create/load")
+    if len(sys.argv) < 2 or not sys.argv[1].isnumeric():
+        print("Please enter a valid run number (check wanDB please)")
         exit(-1)
+    
+    if not reward_fn.__name__:
+        print("You messed up something related to the reward function")
+        exit(-1)
+
+    print("##################################")
+    print("Starting run for: " + reward_fn.__name__)
+    print("Run number " + str(sys.argv[1]))
+    print("##################################\n")
+    run_name = reward_fn.__name__ + "_" + sys.argv[1]
 
     # 32 processes
     n_proc = 32
@@ -70,22 +80,26 @@ if __name__ == "__main__":
                       save_every_ts=100_000,
                       timestep_limit=2_000_000_000,
                       log_to_wandb=LOG_TO_WANDB,
-                      wandb_group_name="unnamed group" if (len(sys.argv) < 2) else (sys.argv[1]),
+                      wandb_group_name="unnamed group" if (not reward_fn.__name__) else (reward_fn.__name__) + "_" + sys.argv[1],
                       wandb_run_name=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                       wandb_project_name="rlgym-ppo",
-                      checkpoints_save_folder= CHECKPOINT_PATH + "new_unnamed_bot" if (len(sys.argv) < 2) else (CHECKPOINT_PATH + sys.argv[1]),
+                      checkpoints_save_folder= CHECKPOINT_PATH + ("new_unnamed_bot" if (len(sys.argv) < 2) else (run_name)),
                       add_unix_timestamp= (len(sys.argv) < 2),
                       random_seed = 123
                       )
     
     if len(sys.argv) == 2:
         # load from folder and use newest checkpoint
-        if(bot_exists(sys.argv[1])):
-            learner.load(CHECKPOINT_PATH + sys.argv[1] + "/" + find_newest_checkpoint(CHECKPOINT_PATH + sys.argv[1]), LOG_TO_WANDB)
+        if(bot_exists(run_name)):
+            print("Loading bot " + run_name + " from newest checkpoint")
+            learner.load(CHECKPOINT_PATH + run_name + "/" + find_newest_checkpoint(CHECKPOINT_PATH + run_name), LOG_TO_WANDB)
+        else:
+            print("The provided model, " + run_name + ", does not exist, creating new instead")
     elif len(sys.argv) == 3:
         # load from folder and use specific checkpoint
-        if(bot_exists(sys.argv[1])):
-            learner.load(CHECKPOINT_PATH + sys.argv[1]  + "/" + sys.argv[2], LOG_TO_WANDB)
+        print("Loading bot " + run_name + " from checkpoint " + str(sys.argv[2]))
+        if(bot_exists(run_name)):
+            learner.load(CHECKPOINT_PATH + run_name  + "/" + sys.argv[2], LOG_TO_WANDB)
     
 
 
