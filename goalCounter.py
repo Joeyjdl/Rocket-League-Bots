@@ -1,8 +1,8 @@
 # import Training as functions
 from utils.logger.ExampleLogger import ExampleLogger
-from utils.envBuilder.build_rocketsim_env import build_rocketsim_env, reward_fn
+from utils.envBuilder.build_rocketsim_env import build_rocketsim_env
 from utils.stateSetter.stateSetter import CustomState, DefaultState
-
+from utils.Rewards.defaultReward import defaultReward
 import time
 import sys
 import os
@@ -20,6 +20,7 @@ from rlgym_sim.utils.state_setters import RandomState
 
 CHECKPOINT_PATH = "data/checkpoints/"
 LOG_TO_WANDB = False
+reward_fn = defaultReward
 
 def bot_exists(name):
     folder = os.path.abspath("./data/checkpoints/" + name)
@@ -47,7 +48,7 @@ def find_newest_checkpoint(path):
 
 
 # ## Load model
-if __name__ == "__main__":
+def goalCount():
     from rlgym_ppo import Learner
     metrics_logger = ExampleLogger()
 
@@ -156,9 +157,10 @@ if __name__ == "__main__":
             actions, log_probs = learner.ppo_learner.policy.get_action(obs=obs)
             actions = actions.numpy().astype(np.float32)
             # print(f"The actions are \n\n{actions}")
-            env.render()
+            # env.render()
             obs, reward, done, info = env.step(actions)
             state_val = info['state']
-            
-            time.sleep(1/30)
-        print(f"Goals so far: {state_val.blue_score}")
+            # print(f" {state_val.blue_score} ")
+            # time.sleep(1/120)
+        # print(f" {state_val.blue_score} ")
+    print(f" final {state_val.blue_score} ")
