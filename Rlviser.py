@@ -1,7 +1,7 @@
 # import Training as functions
 from utils.logger.ExampleLogger import ExampleLogger
 from utils.envBuilder.build_rocketsim_env import build_rocketsim_env, reward_fn
-from utils.stateSetter.stateSetter import CustomState
+from utils.stateSetter.stateSetter import CustomState, DefaultState
 
 import time
 import sys
@@ -135,7 +135,7 @@ if __name__ == "__main__":
         lin_vel_coef=1 / common_values.CAR_MAX_SPEED,
         ang_vel_coef=1 / common_values.CAR_MAX_ANG_VEL)
 
-    state_setter = CustomState(ball_on_ground=True)
+    state_setter = DefaultState()
 
     env = rlgym_sim.make(tick_skip=tick_skip,
                             team_size=team_size,
