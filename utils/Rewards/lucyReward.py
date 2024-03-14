@@ -27,7 +27,9 @@ class BallToGoalDistance(RewardFunction):
         normdistBallToGoalDef = np.linalg.norm(ballPos - protecc)
         wOff = np.exp(-0.5*(normdistBallToGoalOff - depthGoal)/(6000*wDisOff))
         wDef = np.exp(-0.5*(normdistBallToGoalDef - depthGoal)/(6000*wDisDef))
-        return wOff - wDef
+        reward = wOff - wDef
+        # print("BallToGoalDistance = ", reward)
+        return reward
 
 
 class BallToGoalVelocity(RewardFunction):
@@ -44,8 +46,9 @@ class BallToGoalVelocity(RewardFunction):
         
         distBallToGoal = ballPos - attacc
         normdistBallToGoal = np.linalg.norm(ballPos - attacc)
-
-        return float(np.dot(np.divide(distBallToGoal, normdistBallToGoal), np.divide(distBallToGoal, normdistBallToGoal)))
+        reward = float(np.dot(np.divide(distBallToGoal, normdistBallToGoal), np.divide(distBallToGoal, normdistBallToGoal)))
+        # print("BallToGoalVelocity", reward)
+        return reward
 
 
 class SaveBoost(RewardFunction):
@@ -53,7 +56,10 @@ class SaveBoost(RewardFunction):
         pass
 
     def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
-        return np.sqrt(state.players[0].boost_amount/100)
+        reward = np.sqrt(state.players[0].boost_amount/100)
+        
+        # print("SaveBoost", reward)
+        return reward
 
 
 class DistWeightedAlignment(RewardFunction):
@@ -70,10 +76,12 @@ class DistWeightedAlignment(RewardFunction):
     def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
         alignBallGoalReward = AlignBallGoal().get_reward(player, state, previous_action)
         distToBallReward = LiuDistancePlayerToBallReward().get_reward(player,state, previous_action)
-        temp_array = np.array([alignBallGoalReward, distToBallReward])
-        krcSgn = DistWeightedAlignment.sgn(temp_array)
+        krcSgn = DistWeightedAlignment.sgn([alignBallGoalReward, distToBallReward])
 
-        return np.linalg.norm(alignBallGoalReward*distToBallReward)**0.5 * krcSgn
+        reward = np.linalg.norm(alignBallGoalReward*distToBallReward)**0.5 * krcSgn
+        # print("DistWeightedAlignment", reward)
+
+        return reward
     
 
 class OffPotential(RewardFunction):
@@ -92,7 +100,9 @@ class OffPotential(RewardFunction):
         distToBallReward = LiuDistancePlayerToBallReward().get_reward(player, state, previous_action)
         playerToBallVelocityReward = VelocityPlayerToBallReward().get_reward(player, state, previous_action)
         krcSgn = OffPotential.sgn(np.array([alignBallGoalReward, distToBallReward, playerToBallVelocityReward]))
-        return np.linalg.norm(alignBallGoalReward*distToBallReward*playerToBallVelocityReward)**(1/3) * krcSgn
+        reward = np.linalg.norm(alignBallGoalReward*distToBallReward*playerToBallVelocityReward)**(1/3) * krcSgn
+        # print("Offreward", reward)
+        return reward
 
 
 class touchBallToGoal(RewardFunction):
@@ -122,7 +132,7 @@ class touchBallToGoal(RewardFunction):
 
         # self.lastRegisteredBallsTouched = new_value
         self.lastRegisteredballSpeedToGoal = ballSpeedToGoal
-
+        # print("touchBallToGoal", reward)
         return reward
     
 
@@ -134,8 +144,10 @@ def lucyReward():
                           DistWeightedAlignment(),
                           OffPotential(),
                           touchBallToGoal(),
-                          EventReward(team_goal=10, concede=-3, shot=1.5, touch=0.05))
-    reward_weights = (2, 0.8, 0.5, 0.6, 1, 0.25, 1)
+                          EventReward(team_goal=10, concede=-3, shot=1.5, touch=0.05),
+                          VelocityPlayerToBallReward(),
+                          VelocityBallToGoalReward())
+    reward_weights = (2, 0.8, 0.5, 0.6, 1, 0.25, 1, 0.1, 1)
 
     return CombinedReward(reward_functions=rewards_to_combine,
                             reward_weights=reward_weights)
