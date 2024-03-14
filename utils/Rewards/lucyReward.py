@@ -16,19 +16,17 @@ class BallToGoalDistance(RewardFunction):
 
     def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
         ballPos = state.ball.position
-        ballSpeed = state.ball.linear_velocity
         protecc = np.array(BLUE_GOAL_BACK)
         attacc = np.array(ORANGE_GOAL_BACK)
         if player.team_num == ORANGE_TEAM:
             protecc, attacc = attacc, protecc 
         wDisOff = 0.6
         wDisDef = 0.4
-        distBallToGoal = ballPos - attacc
-        depthGoal = ORANGE_GOAL_BACK - BACK_WALL_Y 
-        normdistBallToGoalOff = np.linalg.norm(ballPos,attacc)
-        normdistBallToGoalDef = np.linalg.norm(ballPos,protecc)
-        wOff = np.exp(-0,5*(normdistBallToGoalOff- depthGoal)/6000*wDisOff)
-        wDef = np.exp(-0,5*(normdistBallToGoalDef- depthGoal)/6000*wDisDef)
+        depthGoal = BACK_NET_Y - BACK_WALL_Y 
+        normdistBallToGoalOff = np.linalg.norm(ballPos - attacc)
+        normdistBallToGoalDef = np.linalg.norm(ballPos - protecc)
+        wOff = np.exp(-0.5*(normdistBallToGoalOff - depthGoal)/(6000*wDisOff))
+        wDef = np.exp(-0.5*(normdistBallToGoalDef - depthGoal)/(6000*wDisDef))
         return wOff - wDef
 
 
@@ -45,9 +43,9 @@ class BallToGoalVelocity(RewardFunction):
             protecc, attacc = attacc, protecc        
         
         distBallToGoal = ballPos - attacc
-        normdistBallToGoal = np.linalg.norm(ballPos,attacc)
+        normdistBallToGoal = np.linalg.norm(ballPos - attacc)
 
-        return float((distBallToGoal/normdistBallToGoal)*(ballSpeed/6000))
+        return float(np.dot(np.divide(distBallToGoal, normdistBallToGoal), np.divide(distBallToGoal, normdistBallToGoal)))
 
 
 class SaveBoost(RewardFunction):
@@ -61,7 +59,8 @@ class SaveBoost(RewardFunction):
 class DistWeightedAlignment(RewardFunction):
     def reset(self, initial_state: GameState):
         pass
-    
+
+    @staticmethod
     def sgn(array):
         for num in array:
             if num <= 0:
@@ -71,7 +70,8 @@ class DistWeightedAlignment(RewardFunction):
     def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
         alignBallGoalReward = AlignBallGoal().get_reward(player, state, previous_action)
         distToBallReward = LiuDistancePlayerToBallReward().get_reward(player,state, previous_action)
-        krcSgn = self.sgn(np.array([alignBallGoalReward, distToBallReward]))
+        temp_array = np.array([alignBallGoalReward, distToBallReward])
+        krcSgn = DistWeightedAlignment.sgn(temp_array)
 
         return np.linalg.norm(alignBallGoalReward*distToBallReward)**0.5 * krcSgn
     
@@ -80,6 +80,7 @@ class OffPotential(RewardFunction):
     def reset(self, initial_state: GameState):
         pass
 
+    @staticmethod
     def sgn(array):
         for num in array:
             if num <= 0:
@@ -89,8 +90,8 @@ class OffPotential(RewardFunction):
     def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
         alignBallGoalReward = AlignBallGoal().get_reward(player, state, previous_action)
         distToBallReward = LiuDistancePlayerToBallReward().get_reward(player, state, previous_action)
-        playerToBallVelocityReward = VelocityPlayerToBallReward.get_reward(player, state, previous_action)
-        krcSgn = self.sgn(np.array([alignBallGoalReward, distToBallReward, playerToBallVelocityReward]))
+        playerToBallVelocityReward = VelocityPlayerToBallReward().get_reward(player, state, previous_action)
+        krcSgn = OffPotential.sgn(np.array([alignBallGoalReward, distToBallReward, playerToBallVelocityReward]))
         return np.linalg.norm(alignBallGoalReward*distToBallReward*playerToBallVelocityReward)**(1/3) * krcSgn
 
 
@@ -99,7 +100,7 @@ class touchBallToGoal(RewardFunction):
         # Update every reset since rocket league may crash and be restarted with clean values
         player = initial_state.players[0]
         self.lastRegisteredBallsTouched = player.ball_touched
-        self.lastRegisteredballSpeedToGoal = BallToGoalVelocity.get_reward(player, initial_state)
+        self.lastRegisteredballSpeedToGoal = 0
     
     def __init__(self):
         super().__init__()
@@ -108,16 +109,18 @@ class touchBallToGoal(RewardFunction):
         self.lastRegisteredballSpeedToGoal = 0
     
     def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray, optional_data=None):
-        old_value = self.lastRegisteredBallsTouched
-        new_value = player.ball_touched
+        # old_value = self.lastRegisteredBallsTouched
+        # new_value = player.ball_touched
 
-        ballSpeedToGoal = BallToGoalVelocity.get_reward(player, state)
+        ballSpeedToGoal = BallToGoalVelocity().get_reward(player, state, previous_action)
 
-        diff_value = new_value - old_value
-        if diff_value > 0:
+        # diff_value = new_value - old_value
+        if player.ball_touched == True:
             reward = 1 * (ballSpeedToGoal - self.lastRegisteredballSpeedToGoal)
+        else:
+            reward = 0
 
-        self.lastRegisteredBallsTouched = new_value
+        # self.lastRegisteredBallsTouched = new_value
         self.lastRegisteredballSpeedToGoal = ballSpeedToGoal
 
         return reward
