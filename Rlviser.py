@@ -98,6 +98,10 @@ if __name__ == "__main__":
                       add_unix_timestamp= (len(sys.argv) < 2)
                       )
     
+    count = "--count" in sys.argv
+    if count:
+        sys.argv.remove("--count")
+
     if len(sys.argv) == 2:
         # load from folder and use newest checkpoint
         if(bot_exists(run_name)):
@@ -146,7 +150,7 @@ if __name__ == "__main__":
                             action_parser=action_parser,
                             state_setter=state_setter)
 
-    episodes = 100
+    episodes = 1000
 
     for ep in range(episodes):
         obs = env.reset()
@@ -156,9 +160,10 @@ if __name__ == "__main__":
             actions, log_probs = learner.ppo_learner.policy.get_action(obs=obs)
             actions = actions.numpy().astype(np.float32)
             # print(f"The actions are \n\n{actions}")
-            env.render()
+            if not count: env.render()
             obs, reward, done, info = env.step(actions)
             state_val = info['state']
             
-            time.sleep(1/30)
+            if not count: time.sleep(1/30)
         print(f"Goals so far: {state_val.blue_score}")
+    print("Goal rate: " + str(state_val.blue_score) + "/" + str(episodes) + " = " + str(state_val.blue_score / episodes))
