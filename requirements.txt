@@ -1,5 +1,4 @@
 numpy==1.26.4
-rlgym==1.2.2
-rlgym_ppo==1.3.4
-rlgym_sim==1.2.6
-stable_baselines3==2.2.1
+rlgym_ppo @ git+https://github.com/AechPro/rlgym-ppo
+rocketsim==2.0.0.post1
+rlgym_sim @ git+https://github.com/AechPro/rocket-league-gym-sim@main

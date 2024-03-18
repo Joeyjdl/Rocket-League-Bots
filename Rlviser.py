@@ -150,7 +150,7 @@ if __name__ == "__main__":
                             action_parser=action_parser,
                             state_setter=state_setter)
 
-    episodes = 1000
+    episodes = 100
 
     for ep in range(episodes):
         obs = env.reset()
@@ -165,5 +165,5 @@ if __name__ == "__main__":
             state_val = info['state']
             
             if not count: time.sleep(1/30)
-        print(f"Goals so far: {state_val.blue_score}")
-    print("Goal rate: " + str(state_val.blue_score) + "/" + str(episodes) + " = " + str(state_val.blue_score / episodes))
+        print(f"Goals so far: {state_val.blue_score} ({ep}/{episodes})")
+    print("Goal rate: " + str(state_val.blue_score) + "/" + str(episodes) + " = " + str(state_val.blue_score / episodes))     
