@@ -5,7 +5,7 @@ from utils.logger.ExampleLogger import ExampleLogger
 import sys
 import os
 from datetime import datetime
-from utils.envBuilder.build_rocketsim_env import build_rocketsim_env, reward_fn
+from utils.envBuilder.build_rocketsim_env import build_rocketsim_env, reward_fn, clipParam
 
 CHECKPOINT_PATH = "data/checkpoints/"
 LOG_TO_WANDB = True
@@ -80,8 +80,9 @@ if __name__ == "__main__":
                       save_every_ts=10_000_000,
                       timestep_limit=1_000_000_000,
                       n_checkpoints_to_keep=100,
+                      ppo_clip_range=clipParam,
                       log_to_wandb=LOG_TO_WANDB,
-                      wandb_group_name="unnamed group" if (not reward_fn.__name__) else (reward_fn.__name__) + "_" + sys.argv[1],
+                      wandb_group_name="unnamed group" if (not reward_fn.__name__) else (reward_fn.__name__ + "_" + str(clipParam)) + "_" + sys.argv[1],
                       wandb_run_name=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                       wandb_project_name="rlgym-ppo",
                       checkpoints_save_folder= CHECKPOINT_PATH + ("new_unnamed_bot" if (len(sys.argv) < 2) else (run_name)),

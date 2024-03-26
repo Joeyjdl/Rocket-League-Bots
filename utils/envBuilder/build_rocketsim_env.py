@@ -11,7 +11,8 @@ from rlgym_sim.utils.state_setters import RandomState
 import numpy as np
 
 # DO NOT CALL THE FUNCTION HERE!!! ##########################################################
-reward_fn = sparseReward
+reward_fn = defaultReward
+clipParam = 0.18
 
 def build_rocketsim_env():    
     spawn_opponents = False
