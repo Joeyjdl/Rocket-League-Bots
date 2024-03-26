@@ -9,6 +9,8 @@ A 1v0 bot trained using Rlgym_ppo
 
 When running for the first time, the script may ask you for a wandb API key, if you are not interested in the logs, then you can choose to disable them
 
+If you have an Nvidia GPU, you may want to consider using the GPU for training by installing pytorch with CUDA, which can be found at https://pytorch.org/. Alternatively, the command to install it (at the time of writing) is: `pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118`
+
 ## Performance
 There are several options for looking at the bots performance
 1. Wandb logs

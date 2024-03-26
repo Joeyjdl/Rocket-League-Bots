@@ -108,12 +108,16 @@ if __name__ == "__main__":
             print("Loading bot " + run_name + " from newest checkpoint")
             learner.load(CHECKPOINT_PATH + run_name + "/" + find_newest_checkpoint(CHECKPOINT_PATH + run_name), LOG_TO_WANDB)
         else:
-            print("The provided model, " + run_name + ", does not exist, creating new instead")
+            print("The provided model, " + run_name + ", does not exist")
+            exit(-1)
     elif len(sys.argv) == 3:
         # load from folder and use specific checkpoint
         print("Loading bot " + run_name + " from checkpoint " + str(sys.argv[2]))
         if(bot_exists(run_name)):
             learner.load(CHECKPOINT_PATH + run_name  + "/" + sys.argv[2], LOG_TO_WANDB)
+        else:
+            print("The provided model, " + run_name + " " + sys.argv[2] + ", does not exist")
+            exit(-1)
 
     spawn_opponents = False
     team_size = 1
@@ -150,7 +154,7 @@ if __name__ == "__main__":
                             action_parser=action_parser,
                             state_setter=state_setter)
 
-    episodes = 100
+    episodes = 1000
 
     for ep in range(episodes):
         obs = env.reset()
