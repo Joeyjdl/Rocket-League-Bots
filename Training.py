@@ -49,11 +49,11 @@ if __name__ == "__main__":
         print("You messed up something related to the reward function")
         exit(-1)
 
+    run_name = reward_fn.__name__ + "_" + str(clipParam) + "_" + sys.argv[1]
     print("##################################")
-    print("Starting run for: " + reward_fn.__name__)
+    print("Starting run for: " +  run_name)
     print("Run number " + str(sys.argv[1]))
     print("##################################\n")
-    run_name = reward_fn.__name__ + "_" + sys.argv[1]
 
     # 32 processes
     n_proc = 32
@@ -82,7 +82,7 @@ if __name__ == "__main__":
                       n_checkpoints_to_keep=100,
                       ppo_clip_range=clipParam,
                       log_to_wandb=LOG_TO_WANDB,
-                      wandb_group_name="unnamed group" if (not reward_fn.__name__) else (reward_fn.__name__ + "_" + str(clipParam)) + "_" + sys.argv[1],
+                      wandb_group_name="unnamed group" if (not reward_fn.__name__) else (run_name),
                       wandb_run_name=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                       wandb_project_name="rlgym-ppo",
                       checkpoints_save_folder= CHECKPOINT_PATH + ("new_unnamed_bot" if (len(sys.argv) < 2) else (run_name)),
