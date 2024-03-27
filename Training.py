@@ -56,7 +56,7 @@ if __name__ == "__main__":
     print("##################################\n")
 
     # 32 processes
-    n_proc = 32
+    n_proc = 100
     if("--n_proc" in sys.argv):
         i = sys.argv.index("--n_proc")
         n_proc = int(sys.argv[i+1])

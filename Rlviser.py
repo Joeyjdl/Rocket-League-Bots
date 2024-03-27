@@ -1,6 +1,6 @@
 # import Training as functions
 from utils.logger.ExampleLogger import ExampleLogger
-from utils.envBuilder.build_rocketsim_env import build_rocketsim_env, reward_fn
+from utils.envBuilder.build_rocketsim_env import build_rocketsim_env, reward_fn, clipParam
 from utils.stateSetter.stateSetter import CustomState, DefaultState
 
 import time
@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
     if sys.argv[1].isnumeric():
         # use current reward func, interpret as run number
-        run_name = reward_fn.__name__ + "_" + sys.argv[1]
+        run_name = reward_fn.__name__ + "_" + str(clipParam) + "_" + sys.argv[1]
     else:
         # use full name
         run_name = sys.argv[1]
