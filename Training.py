@@ -40,10 +40,6 @@ def bot_exists(name):
 if __name__ == "__main__":
     from rlgym_ppo import Learner
     metrics_logger = DiscordLogger()
-
-    if len(sys.argv) < 2 or not sys.argv[1].isnumeric():
-        print("Please enter a valid run number (check wanDB please)")
-        exit(-1)
     
     if not reward_fn.__name__:
         print("You messed up something related to the reward function")
@@ -62,7 +58,7 @@ if __name__ == "__main__":
 
     print("##################################")
     print("Starting run for: " +  run_name)
-    print("Run number " + str(sys.argv[1]))
+    print("Run number " + str(run_name))
     print("##################################\n")
 
     # 32 processes
