@@ -60,10 +60,12 @@ if __name__ == "__main__":
         exit(-1)
 
     run_name = ""
-
     if sys.argv[1].isnumeric():
         # use current reward func, interpret as run number
-        run_name = reward_fn.__name__ + "_" + str(clipParam) + "_" + sys.argv[1]
+        if(clipParam):
+            run_name = reward_fn.__name__ + "_" + str(clipParam) + "_" + sys.argv[1]
+        else:
+            run_name = reward_fn.__name__ + "_" + sys.argv[1]
     else:
         # use full name
         run_name = sys.argv[1]
@@ -154,7 +156,7 @@ if __name__ == "__main__":
                             action_parser=action_parser,
                             state_setter=state_setter)
 
-    episodes = 1000
+    episodes = 10000
 
     for ep in range(episodes):
         obs = env.reset()

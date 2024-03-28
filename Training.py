@@ -34,7 +34,7 @@ def bot_exists(name):
     folder = os.path.abspath("./data/checkpoints/" + name)
     return os.path.exists(folder)
 
-
+# lucy, sparse1, sparse2, sparse3, default6
 
 
 if __name__ == "__main__":
@@ -49,7 +49,17 @@ if __name__ == "__main__":
         print("You messed up something related to the reward function")
         exit(-1)
 
-    run_name = reward_fn.__name__ + "_" + str(clipParam) + "_" + sys.argv[1]
+    run_name = ""
+    if sys.argv[1].isnumeric():
+        # use current reward func, interpret as run number
+        if(clipParam):
+            run_name = reward_fn.__name__ + "_" + str(clipParam) + "_" + sys.argv[1]
+        else:
+            run_name = reward_fn.__name__ + "_" + sys.argv[1]
+    else:
+        # use full name
+        run_name = sys.argv[1]
+
     print("##################################")
     print("Starting run for: " +  run_name)
     print("Run number " + str(sys.argv[1]))
