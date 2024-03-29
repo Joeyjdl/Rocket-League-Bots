@@ -156,7 +156,7 @@ if __name__ == "__main__":
                             action_parser=action_parser,
                             state_setter=state_setter)
 
-    episodes = 500
+    episodes = 5000
     batches = 10
     batch_size = episodes / batches
     goal_counts = []
