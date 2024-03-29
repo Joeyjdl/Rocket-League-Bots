@@ -157,6 +157,9 @@ if __name__ == "__main__":
                             state_setter=state_setter)
 
     episodes = 500
+    batches = 10
+    batch_size = episodes / batches
+    goal_counts = []
 
     for ep in range(episodes):
         obs = env.reset()
@@ -171,5 +174,16 @@ if __name__ == "__main__":
             state_val = info['state']
             
             if not count: time.sleep(1/30)
-        print(f"Goals so far: {state_val.blue_score} ({ep}/{episodes})")
-    print("Goal rate: " + str(state_val.blue_score) + "/" + str(episodes) + " = " + str(state_val.blue_score / episodes))     
+        # print(f"Goals so far: {state_val.blue_score} ({ep}/{episodes})")
+        if(ep % (batch_size / 10) == 0):
+            print("#", end="", flush=True)
+        if(ep > 0 and (ep+1) % (episodes / batches) == 0):
+            if(len(goal_counts) > 0):
+                goal_counts.append(state_val.blue_score - sum(goal_counts))
+            else:
+                goal_counts.append(state_val.blue_score)
+                
+            print(f"\n\nGoal rate at {ep+1} = {goal_counts[-1]} / {(episodes / batches)}\n")
+
+    print(f"Goal rates per {episodes / batches} for {run_name}: {goal_counts}")
+    print("Goal rate: " + str(state_val.blue_score) + "/" + str(episodes) + " = " + str(state_val.blue_score / episodes))
