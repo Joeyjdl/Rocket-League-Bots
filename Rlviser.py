@@ -156,7 +156,7 @@ if __name__ == "__main__":
                             action_parser=action_parser,
                             state_setter=state_setter)
 
-    episodes = 10000
+    episodes = 500
 
     for ep in range(episodes):
         obs = env.reset()
